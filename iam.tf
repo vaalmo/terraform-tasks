@@ -31,10 +31,14 @@ resource "aws_iam_role" "ec2" {
     ]
   })
 
-  # Permissions policy: what the role can do once assumed
-  managed_policy_arns = [aws_iam_policy.s3_write.arn]
-
   tags = local.common_tags
+}
+
+# Permissions policy: what the role can do once assumed
+resource "aws_iam_role_policy_attachment" "s3_write" {
+  role       = aws_iam_role.ec2.name
+  policy_arn = aws_iam_policy.s3_write.arn
+  # attachments do not support tags
 }
 
 resource "aws_iam_instance_profile" "ec2" {
