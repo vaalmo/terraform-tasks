@@ -1,0 +1,10 @@
+.terraform/
+*.tfstate
+*.tfstate.*
+crash.log
+*.tfplan
+
+# never commit keys
+*.pem
+epam_lab
+epam_lab.pub
