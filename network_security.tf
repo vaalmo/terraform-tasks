@@ -11,27 +11,27 @@ data "aws_instance" "private" {
 # --- Security groups ---
 
 resource "aws_security_group" "ssh" {
-  name        = local.ssh_sg_name
+  name        = var.ssh_sg_name
   description = "SSH and ICMP from allowed IP ranges"
   vpc_id      = var.vpc_id
 
-  tags = merge(local.common_tags, { Name = local.ssh_sg_name })
+  tags = merge(local.common_tags, { Name = var.ssh_sg_name })
 }
 
 resource "aws_security_group" "public_http" {
-  name        = local.public_http_sg_name
+  name        = var.public_http_sg_name
   description = "HTTP and ICMP from allowed IP ranges"
   vpc_id      = var.vpc_id
 
-  tags = merge(local.common_tags, { Name = local.public_http_sg_name })
+  tags = merge(local.common_tags, { Name = var.public_http_sg_name })
 }
 
 resource "aws_security_group" "private_http" {
-  name        = local.private_http_sg_name
+  name        = var.private_http_sg_name
   description = "HTTP 8080 and ICMP from the public HTTP security group only"
   vpc_id      = var.vpc_id
 
-  tags = merge(local.common_tags, { Name = local.private_http_sg_name })
+  tags = merge(local.common_tags, { Name = var.private_http_sg_name })
 }
 
 # --- SSH SG rules ---

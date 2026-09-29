@@ -1,6 +1,10 @@
 aws_region = "eu-west-1"
 project_id = "cmtr-dft5l1nz"
 
+ssh_sg_name          = "cmtr-dft5l1nz-ssh-sg"
+public_http_sg_name  = "cmtr-dft5l1nz-public-http-sg"
+private_http_sg_name = "cmtr-dft5l1nz-private-http-sg"
+
 allowed_ip_range = ["18.153.146.156/32", "45.178.73.181/32"]
 
 vpc_id              = "vpc-0e95029a190aa91bf"
