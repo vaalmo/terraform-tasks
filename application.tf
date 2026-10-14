@@ -2,14 +2,38 @@
 # Lookups: existing infrastructure and AMI
 # =========================================================
 
+# The platform gives NAMES, so look up the real IDs
+
+data "aws_vpc" "this" {
+  filter {
+    name   = "tag:Name"
+    values = [var.vpc]
+  }
+}
+
 data "aws_subnet" "public_a" {
-  vpc_id     = var.vpc
+  vpc_id     = data.aws_vpc.this.id
   cidr_block = var.public_subnet_a_cidr
 }
 
 data "aws_subnet" "public_b" {
-  vpc_id     = var.vpc
+  vpc_id     = data.aws_vpc.this.id
   cidr_block = var.public_subnet_b_cidr
+}
+
+data "aws_security_group" "ssh" {
+  name   = var.ssh_inbound_id
+  vpc_id = data.aws_vpc.this.id
+}
+
+data "aws_security_group" "http" {
+  name   = var.http_inbound_id
+  vpc_id = data.aws_vpc.this.id
+}
+
+data "aws_security_group" "lb_http" {
+  name   = var.lb_http_inbound_id
+  vpc_id = data.aws_vpc.this.id
 }
 
 # Latest Amazon Linux 2023 (standard, not "minimal") for x86_64
@@ -41,7 +65,7 @@ resource "aws_launch_template" "this" {
   network_interfaces {
     associate_public_ip_address = true
     delete_on_termination       = true
-    security_groups             = [var.ssh_inbound_id, var.http_inbound_id]
+    security_groups             = [data.aws_security_group.ssh.id, data.aws_security_group.http.id]
   }
 
   metadata_options {
@@ -88,7 +112,7 @@ resource "aws_lb_target_group" "this" {
   name     = var.target_group_name
   port     = 80
   protocol = "HTTP"
-  vpc_id   = var.vpc
+  vpc_id   = data.aws_vpc.this.id
 
   health_check {
     path    = "/"
@@ -102,7 +126,7 @@ resource "aws_lb" "this" {
   name               = var.load_balancer
   load_balancer_type = "application"
   internal           = false
-  security_groups    = [var.lb_http_inbound_id]
+  security_groups    = [data.aws_security_group.lb_http.id]
   subnets            = [data.aws_subnet.public_a.id, data.aws_subnet.public_b.id]
 
   tags = local.common_tags

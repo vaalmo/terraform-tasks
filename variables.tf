@@ -11,7 +11,7 @@ variable "project_id" {
 # --- Pre-created environment ---
 
 variable "vpc" {
-  description = "ID of the pre-created VPC."
+  description = "Name (Name tag) of the pre-created VPC."
   type        = string
 }
 
@@ -26,17 +26,17 @@ variable "public_subnet_b_cidr" {
 }
 
 variable "ssh_inbound_id" {
-  description = "ID of the security group that allows SSH to the EC2 instances."
+  description = "Name of the security group that allows SSH to the EC2 instances."
   type        = string
 }
 
 variable "http_inbound_id" {
-  description = "ID of the security group that allows HTTP to the EC2 instances."
+  description = "Name of the security group that allows HTTP to the EC2 instances."
   type        = string
 }
 
 variable "lb_http_inbound_id" {
-  description = "ID of the security group that allows HTTP from the internet to the load balancer."
+  description = "Name of the security group that allows HTTP from the internet to the load balancer."
   type        = string
 }
 
