@@ -6,7 +6,7 @@ vpc_cidr = "10.10.0.0/16"
 
 subnet1_name       = "cmtr-dft5l1nz-subnet-public-a"
 subnet1_cidr       = "10.10.1.0/24"
-availability_zone1 = "eu_west-1a"
+availability_zone1 = "eu-west-1a"
 
 subnet2_name       = "cmtr-dft5l1nz-subnet-public-b"
 subnet2_cidr       = "10.10.3.0/24"
