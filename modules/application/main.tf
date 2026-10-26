@@ -28,15 +28,12 @@ resource "aws_launch_template" "this" {
     dnf install -y httpd
     systemctl enable --now httpd
 
-    # IMDSv2: get a token, then read the metadata with it
+    # $${...} = escaped so Terraform leaves it for bash
+    COMPUTE_MACHINE_UUID=$(cat /sys/devices/virtual/dmi/id/product_uuid | tr '[:upper:]' '[:lower:]')
     TOKEN=$(curl -s -X PUT "http://169.254.169.254/latest/api/token" -H "X-aws-ec2-metadata-token-ttl-seconds: 21600")
-    INSTANCE_ID=$(curl -s -H "X-aws-ec2-metadata-token: $TOKEN" http://169.254.169.254/latest/meta-data/instance-id)
-    PRIVATE_IP=$(curl -s -H "X-aws-ec2-metadata-token: $TOKEN" http://169.254.169.254/latest/meta-data/local-ipv4)
+    COMPUTE_INSTANCE_ID=$(curl -s -H "X-aws-ec2-metadata-token: $${TOKEN}" http://169.254.169.254/latest/meta-data/instance-id)
 
-    # Machine UUID: unique per instance, the verifier compares it across requests
-    MACHINE_UUID=$(cat /sys/devices/virtual/dmi/id/product_uuid | tr '[:upper:]' '[:lower:]')
-
-    echo "This message was generated on instance $INSTANCE_ID with the following UUID $MACHINE_UUID (private IP: $PRIVATE_IP)" > /var/www/html/index.html
+    echo "This message was generated on instance $${COMPUTE_INSTANCE_ID} with the following UUID $${COMPUTE_MACHINE_UUID}" > /var/www/html/index.html
   EOT
   )
 }
